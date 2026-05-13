@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Evento {
+  id       Int    @id @default(1)
+  data     String @default("")
+  horario  String @default("")
+  local    String @default("")
+  mapsLink String @default("")
+}
+
+model Cor {
+  id        Int        @id @default(autoincrement())
+  nome      String
+  hex       String
+  padrinhos Padrinho[]
+}
+
+model Padrinho {
+  id          String   @id @default(uuid())
+  nome        String
+  tipo        String   @default("padrinho") // "padrinho" | "madrinha" | "convidado"
+  status      String   @default("pendente") // "pendente" | "confirmado" | "recusado"
+  visualizado Boolean  @default(false)
+  corId       Int?
+  cor         Cor?     @relation(fields: [corId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
+model AlbumEntry {
+  id        Int      @id @default(autoincrement())
+  tipo      String   // "foto" | "texto" | "video" | "pix" | "dinheiro"
+  conteudo  String?  // Texto ou URL da mídia
+  valor     Float?   // Para pix ou dinheiro
+  autor     String?  // Nome do convidado
+  createdAt DateTime @default(now())
+}
