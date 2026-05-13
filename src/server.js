@@ -329,6 +329,16 @@ const start = async () => {
     const port = Number(process.env.PORT) || 3001
     await fastify.listen({ port, host: '0.0.0.0' })
     console.log(`\n🌸 K&M Backend rodando em http://localhost:${port}\n`)
+
+    // Cron / Keep-Alive para evitar que o servidor durma no Render (pinga a cada 14 minutos)
+    const pingInterval = 14 * 60 * 1000 // 14 minutos
+    setInterval(() => {
+      const url = process.env.RENDER_EXTERNAL_URL || `http://localhost:${port}`
+      fetch(`${url}/health`)
+        .then(res => console.log(`[Keep-Alive] Ping em ${url}/health: ${res.status}`))
+        .catch(err => console.error(`[Keep-Alive] Erro ao pingar:`, err.message))
+    }, pingInterval)
+    
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)
