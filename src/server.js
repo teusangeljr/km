@@ -40,8 +40,7 @@ fastify.post('/api/upload', async (req, reply) => {
   
   await pump(data.file, fs.createWriteStream(filepath))
   
-  const baseUrl = process.env.RENDER_EXTERNAL_URL || process.env.VITE_API_URL || 'http://localhost:3001'
-  const url = `${baseUrl}/uploads/${filename}`
+  const url = `/uploads/${filename}`
 
   return { url }
 })
